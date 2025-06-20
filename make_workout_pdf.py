@@ -1,22 +1,46 @@
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4   # rM2’s screen is very close to A5, but A4 scales well
+from reportlab.lib.pagesizes import A4
 
-c = canvas.Canvas("workout_sample.pdf", pagesize=A4)
+# Output filename
+OUTPUT = "workout_boxes_underneath.pdf"
 
-# A very simple layout – tweak coordinates or use reportlab.platypus later
+# Page setup
+c = canvas.Canvas(OUTPUT, pagesize=A4)
+page_width, page_height = A4
+margin = 72              # 1" margin
+usable_width = page_width - 2 * margin
+
+# Header
 c.setFont("Helvetica-Bold", 18)
-c.drawString(72, 770, "Monday Workout")
+c.drawString(margin, page_height - margin, "Monday Workout")
 
+# Exercises
 c.setFont("Helvetica", 12)
-lines = [
+exercises = [
     "• Push-ups — 3 × 15",
     "• Goblet Squats — 3 × 12",
     "• Plank — 3 × 45 s",
 ]
-y = 740
-for line in lines:
-    c.drawString(72, y, line)
-    y -= 20
+
+# Layout parameters
+y = page_height - margin - 30  # start below header
+box_h = 40                     # box height for handwriting
+text_to_box_gap = 8            # space between text baseline and top of box
+box_to_next_gap = 20           # space after box before next exercise
+
+for ex in exercises:
+    # draw the exercise text
+    c.drawString(margin, y, ex)
+    
+    # compute box position: box top is text baseline minus gap
+    box_top = y - text_to_box_gap
+    box_bottom = box_top - box_h
+    
+    # draw the box spanning the margins
+    c.rect(margin, box_bottom, usable_width, box_h)
+    
+    # advance y for next exercise
+    y = box_bottom - box_to_next_gap
 
 c.save()
-print("Created workout_sample.pdf")
+print(f"Created {OUTPUT}")
