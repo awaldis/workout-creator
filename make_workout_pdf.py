@@ -45,8 +45,8 @@ def create_workout_pdf(exercises, output_filename, sheet_title):
 
 
 if __name__ == "__main__":
-    DEFAULT_OUTPUT_FILENAME = "2025-06-20 Workout.pdf"
-    DEFAULT_SHEET_TITLE = "2025-06-20 - Full Body"
+    DEFAULT_OUTPUT_FILENAME = "2025-06-23 Workout.pdf"
+    DEFAULT_SHEET_TITLE = "2025-06-23 - Full Body"
     DEFAULT_EXERCISES = [
         "• Pull-ups — No Assist - 7",
         "• Neck — Back Head on Bench - 14, 10",
