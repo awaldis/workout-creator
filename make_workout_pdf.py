@@ -1,7 +1,14 @@
 """Generate a PDF workout sheet with blank boxes for recording reps/weights."""
 
+from pathlib import Path
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+
+
+def load_exercises_from_file(path):
+    """Return a list of exercise lines from the given text file."""
+    with open(path, "r", encoding="utf-8") as f:
+        return [line.strip() for line in f if line.strip()]
 
 
 def create_workout_pdf(exercises, output_filename, sheet_title):
@@ -47,19 +54,10 @@ def create_workout_pdf(exercises, output_filename, sheet_title):
 if __name__ == "__main__":
     DEFAULT_OUTPUT_FILENAME = "2025-06-23 Workout.pdf"
     DEFAULT_SHEET_TITLE = "2025-06-23 - Full Body"
-    DEFAULT_EXERCISES = [
-        "• Pull-ups — No Assist - 7",
-        "• Neck — Back Head on Bench - 14, 10",
-        "• Push-Ups - Narrow - PS Feet on Floor — 9, 6",
-        "• Glutes - One Hip Thrust - L — 0# × 25, 20 - R — 0# × 25, 20",
-        "• Traps - Hex Bar - 180# × 20, 20",
-        "• Lower Back - GHD - #4 Hole  × 18, 8",
-        "• Shoulder - Uppercut - 25# × 21, 18",
-        "• Traps - Elbow Chair Reverse Pushup Belly Up - 19, 12",
-        "• Ab Wheel - 0# × 12, 8",
-        "• Hammer Curls - One Arm Side - 20# × 22, 25# × 10",
-        "• Back Squats - 85# × 17, 10",
-        "• Standing Triceps Extensions - Behind Head - 15# × 22, 20# × 10",
-    ]
 
-    create_workout_pdf(DEFAULT_EXERCISES, DEFAULT_OUTPUT_FILENAME, DEFAULT_SHEET_TITLE)
+    DEFAULT_EXERCISES_FILE = Path(__file__).with_name("default_exercises.txt")
+    DEFAULT_EXERCISES = load_exercises_from_file(DEFAULT_EXERCISES_FILE)
+
+    create_workout_pdf(
+        DEFAULT_EXERCISES, DEFAULT_OUTPUT_FILENAME, DEFAULT_SHEET_TITLE
+    )
