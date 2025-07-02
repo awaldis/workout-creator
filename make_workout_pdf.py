@@ -1,6 +1,8 @@
 """Generate a PDF workout sheet with blank boxes for recording reps/weights."""
 
 from pathlib import Path
+from datetime import datetime
+import argparse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 
@@ -52,12 +54,40 @@ def create_workout_pdf(exercises, output_filename, sheet_title):
 
 
 if __name__ == "__main__":
-    DEFAULT_OUTPUT_FILENAME = "2025-06-23 Workout.pdf"
-    DEFAULT_SHEET_TITLE = "2025-06-23 - Full Body"
+    parser = argparse.ArgumentParser(
+        description="Generate a PDF workout sheet with blank boxes"
+    )
+    parser.add_argument(
+        "-d",
+        "--date",
+        help="Date for the workout sheet in YYYY-MM-DD format. Defaults to today.",
+    )
+    parser.add_argument(
+        "-n",
+        "--name",
+        help="Name of the workout for the sheet title. Defaults to 'Workout'.",
+    )
+    args = parser.parse_args()
+
+    if args.date:
+        try:
+            date = datetime.strptime(args.date, "%Y-%m-%d")
+        except ValueError as exc:
+            raise SystemExit(f"Invalid date format: {args.date}") from exc
+    else:
+        date = datetime.now()
+
+    date_str = date.strftime("%Y-%m-%d")
+    workout_name = args.name or "Workout"
+
+    output_filename = f"{date_str} Workout.pdf"
+    sheet_title = f"{date_str} - {workout_name}"
 
     DEFAULT_EXERCISES_FILE = Path(__file__).with_name("default_exercises.txt")
     DEFAULT_EXERCISES = load_exercises_from_file(DEFAULT_EXERCISES_FILE)
 
     create_workout_pdf(
-        DEFAULT_EXERCISES, DEFAULT_OUTPUT_FILENAME, DEFAULT_SHEET_TITLE
+        DEFAULT_EXERCISES,
+        output_filename,
+        sheet_title,
     )
