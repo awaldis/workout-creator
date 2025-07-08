@@ -15,3 +15,56 @@ python3 make_workout_pdf.py [-d YYYY-MM-DD] [-n "Workout Name"]
 * `-n` / `--name` - optional workout name that appears in the sheet title. Defaults to `Workout`.
 
 The generated PDF will be saved as `<DATE> Workout.pdf` in the current directory.
+
+## Exercise Database
+
+The repository includes a small utility script, `exercise_database.py`, which
+manages a local SQLite database of completed exercises. The database is stored in
+`exercise_log.db` in the repository directory. Because it uses SQLite, the
+database is a single file and requires no additional server setup.
+
+### Initializing the Database
+
+Run the following command once to create the database file and table:
+
+```
+python3 exercise_database.py init
+```
+
+### Adding Entries
+
+Use the `add` command to record an exercise. The body part and laterality
+arguments are validated against predefined lists.
+
+Examples:
+
+```
+# Unilateral example
+python3 exercise_database.py add \
+    --date 2023-09-07 \
+    --body-part Biceps \
+    --name "Concentration Curl" \
+    --laterality unilateral \
+    --weight 30 \
+    --reps 12
+
+# Bilateral example
+python3 exercise_database.py add \
+    --date 2023-09-07 \
+    --body-part Chest \
+    --name "Bench Press" \
+    --laterality bilateral \
+    --weight 135 135 \
+    --reps 10 10
+```
+
+### Listing Entries
+
+To view all recorded exercises:
+
+```
+python3 exercise_database.py list
+```
+
+Each row is printed as a tuple in the order it was stored in the database.
+
