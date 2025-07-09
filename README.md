@@ -34,28 +34,38 @@ python3 exercise_database.py init
 ### Adding Entries
 
 Use the `add` command to record an exercise. The body part and laterality
-arguments are validated against predefined lists.
+arguments are validated against predefined lists. A required `--sets` argument
+controls how many values are expected for the weight and reps options.
+For unilateral exercises, provide one weight and rep value per set using
+`--weight` and `--reps`. For bilateral exercises, provide left and right values
+separately using `--weight-left`, `--weight-right`, `--reps-left` and
+`--reps-right`.
 
 Examples:
 
 ```
-# Unilateral example
+
+# Unilateral example (3 sets)
 python3 exercise_database.py add \
     --date 2023-09-07 \
     --body-part Biceps \
     --name "Concentration Curl" \
     --laterality unilateral \
-    --weight 30 \
-    --reps 12
+    --sets 3 \
+    --weight 30 35 35 \
+    --reps 12 10 8
 
-# Bilateral example
+# Bilateral example (2 sets)
 python3 exercise_database.py add \
     --date 2023-09-07 \
     --body-part Chest \
     --name "Bench Press" \
     --laterality bilateral \
-    --weight 135 135 \
-    --reps 10 10
+    --sets 2 \
+    --weight-left 135 145 \
+    --weight-right 135 145 \
+    --reps-left 10 8 \
+    --reps-right 10 8
 ```
 
 ### Listing Entries
