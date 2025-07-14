@@ -119,6 +119,57 @@ def list_exercises(db_path: Path = DB_PATH) -> None:
     for row in rows:
         print(row)
 
+def parse_int_list(value: Optional[str]) -> List[int]:
+    if not value:
+        return []
+    return [int(v) for v in value.split(',')]
+
+
+def join_sets(weights: List[int], reps: List[int]) -> str:
+    parts = []
+    prev_weight = None
+    for w, r in zip(weights, reps):
+        if prev_weight is None or w != prev_weight:
+            parts.append(f"{w}# × {r}")
+        else:
+            parts.append(str(r))
+        prev_weight = w
+    return ', '.join(parts)
+
+
+def export_exercises(ids: List[int], output: Path, db_path: Path = DB_PATH) -> None:
+    if not ids:
+        return
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    placeholders = ','.join('?' for _ in ids)
+    cur.execute(f'SELECT * FROM exercises WHERE id IN ({placeholders})', ids)
+    rows = cur.fetchall()
+    conn.close()
+
+    row_map = {row[0]: row for row in rows}
+    with open(output, 'w', encoding='utf-8') as f:
+        for ex_id in ids:
+            row = row_map.get(ex_id)
+            if not row:
+                continue
+            _, _, body_part, name, lat, _, weight_l, weight_r, reps_l, reps_r = row
+            title = f"{body_part} - {name}"
+            if lat == 'unilateral':
+                w_l = parse_int_list(weight_l)
+                r_l = parse_int_list(reps_l)
+                sets_str = join_sets(w_l, r_l)
+                line = f"\u2022 {title} - {sets_str}"
+            else:
+                w_left = parse_int_list(weight_l)
+                r_left = parse_int_list(reps_l)
+                w_right = parse_int_list(weight_r)
+                r_right = parse_int_list(reps_r)
+                left_str = join_sets(w_left, r_left)
+                right_str = join_sets(w_right, r_right)
+                line = f"\u2022 {title} - L \u2014 {left_str} - R \u2014 {right_str}"
+            f.write(line + '\n')
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Manage exercise log database.')
     subparsers = parser.add_subparsers(dest='command', required=True)
@@ -141,6 +192,16 @@ def parse_args() -> argparse.Namespace:
     add_parser.add_argument('--reps-right', nargs='+', type=int)
 
     list_parser = subparsers.add_parser('list', help='List all exercises')
+
+    export_parser = subparsers.add_parser(
+        'export', help='Export exercises by ID to a text file'
+    )
+    export_parser.add_argument(
+        '--ids', nargs='+', type=int, required=True, help='IDs of exercises to export'
+    )
+    export_parser.add_argument(
+        '--output', required=True, help='Path of the output text file'
+    )
 
     return parser.parse_args()
 
@@ -170,6 +231,8 @@ def main() -> None:
         print('Exercise added.')
     elif args.command == 'list':
         list_exercises()
+    elif args.command == 'export':
+        export_exercises(args.ids, Path(args.output))
 
 if __name__ == '__main__':
     main()
