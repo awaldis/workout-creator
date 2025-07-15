@@ -78,3 +78,15 @@ python3 exercise_database.py list
 
 Each row is printed as a tuple in the order it was stored in the database.
 
+### Exporting Entries to Text
+
+To generate a text file containing specific exercises from the database, use the
+`export` command and provide the IDs to include:
+
+```
+python3 exercise_database.py export --ids 1 2 3 --output my_workout.txt
+```
+
+Each line in the output file matches the formatting used by
+`default_exercises.txt`.
+
