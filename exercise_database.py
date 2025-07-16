@@ -154,12 +154,12 @@ def export_exercises(ids: List[int], output: Path, db_path: Path = DB_PATH) -> N
             if not row:
                 continue
             _, _, body_part, name, lat, _, weight_l, weight_r, reps_l, reps_r = row
-            title = f"{body_part} - {name}"
+            title = name
             if lat == 'unilateral':
                 w_l = parse_int_list(weight_l)
                 r_l = parse_int_list(reps_l)
                 sets_str = join_sets(w_l, r_l)
-                line = f"\u2022 {title} - {sets_str}"
+                line = f"{title} - {sets_str}"
             else:
                 w_left = parse_int_list(weight_l)
                 r_left = parse_int_list(reps_l)
@@ -167,7 +167,7 @@ def export_exercises(ids: List[int], output: Path, db_path: Path = DB_PATH) -> N
                 r_right = parse_int_list(reps_r)
                 left_str = join_sets(w_left, r_left)
                 right_str = join_sets(w_right, r_right)
-                line = f"\u2022 {title} - L \u2014 {left_str} - R \u2014 {right_str}"
+                line = f"{title} - L \u2014 {left_str} - R \u2014 {right_str}"
             f.write(line + '\n')
 
 def parse_args() -> argparse.Namespace:
