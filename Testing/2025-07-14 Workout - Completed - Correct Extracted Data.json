@@ -1,0 +1,101 @@
+[
+  {
+    "exercise_name": "Chin-Ups - No Assist",
+    "laterality": "unilateral",
+    "reps_left": "8,6",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "0,0",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Neck - Back Head on Bench",
+    "laterality": "unilateral",
+    "reps_left": "15,12",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "0,0",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Push-Ups- Narrow - PS Feet on Floor",
+    "laterality": "unilateral",
+    "reps_left": "12,7",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "0,0",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Back Squat",
+    "laterality": "unilateral",
+    "reps_left": "16,12",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "90,90",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Traps - Hex Bar",
+    "laterality": "unilateral",
+    "reps_left": "12,8",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "210,210",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Lower Back - GHD",
+    "laterality": "unilateral",
+    "reps_left": "16,8",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "0,0",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "One Arm Rear Shoulder Press",
+    "laterality": "unilateral",
+    "reps_left": "21,10",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "25,30",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Ab Wheel",
+    "laterality": "unilateral",
+    "reps_left": "14,8",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "0,0",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "DB Incline Curls - Both Arms Same Time",
+    "laterality": "unilateral",
+    "reps_left": "13,8",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "30,30",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Hamstrings-Step-MF Free Knee",
+    "laterality": "unilateral",
+    "reps_left": "20,20",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "12,12",
+    "weight_right": null
+  },
+  {
+    "exercise_name": "Standing Triceps Extensions - Behind Head",
+    "laterality": "unilateral",
+    "reps_left": "18,8",
+    "reps_right": null,
+    "sets": 2,
+    "weight_left": "20,25",
+    "weight_right": null
+  }
+]
