@@ -32,7 +32,7 @@ def get_most_recent_exercises():
         FROM exercises
         GROUP BY exercise_name
     ) recent ON e.exercise_name = recent.exercise_name AND e.date_completed = recent.max_date
-    ORDER BY e.body_part, e.exercise_name
+    ORDER BY e.body_part, e.date_completed
     """
     
     cursor.execute(query)
