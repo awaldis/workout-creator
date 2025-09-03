@@ -78,8 +78,8 @@ def copy_ids():
     data = request.get_json()
     exercise_ids = data.get('ids', [])
     
-    # Return the IDs as a comma-separated string for clipboard
-    ids_string = ','.join(map(str, exercise_ids))
+    # Return the IDs as a space-separated string for clipboard
+    ids_string = ' '.join(map(str, exercise_ids))
     return jsonify({'ids_string': ids_string, 'count': len(exercise_ids)})
 
 
