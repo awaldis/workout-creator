@@ -81,6 +81,8 @@
         .workout-slots {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            grid-auto-flow: column;
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -229,7 +231,7 @@
                 {% for i in range(12) %}
                 <div class="workout-slot" data-slot-index="{{ i }}">
                     <div class="slot-content">
-                        <div class="slot-placeholder">Drop exercise here</div>
+                        <div class="slot-placeholder">Drop {{ ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"][i] }} Exercise Here</div>
                     </div>
                 </div>
                 {% endfor %}
@@ -310,9 +312,10 @@
             
             const slot = document.querySelector(`[data-slot-index="${slotIndex}"]`);
             slot.classList.remove('occupied');
+            const slotLabels = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"];
             slot.innerHTML = `
                 <div class="slot-content">
-                    <div class="slot-placeholder">Drop exercise here</div>
+                    <div class="slot-placeholder">Drop ${slotLabels[slotIndex]} Exercise Here</div>
                 </div>
             `;
             
