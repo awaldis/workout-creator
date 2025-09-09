@@ -13,10 +13,10 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 2400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 3fr 4fr;
+            grid-template-columns: 3fr 3fr;
             gap: 20px;
         }
         
@@ -25,6 +25,12 @@
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .exercises-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(500px, 1fr));
+            gap: 20px;
         }
         
         .selection-panel {
@@ -202,26 +208,28 @@
         <div class="exercises-panel">
             <h2>Available Exercises (Most Recent)</h2>
             
-            {% for body_part, exercise_list in exercises.items() %}
-            <div class="body-part-section">
-                <div class="body-part-title">{{ body_part }}</div>
-                {% for exercise in exercise_list %}
-                <div class="exercise-item" 
-                     draggable="true" 
-                     data-exercise-id="{{ exercise.id }}"
-                     data-exercise-name="{{ exercise.name }}"
-                     data-body-part="{{ exercise.body_part }}"
-                     data-date="{{ exercise.date }}"
-                     data-sets="{{ exercise.sets }}">
-                    <div class="exercise-name">{{ exercise.name }}</div>
-                    <div class="exercise-details">
-                        Last: {{ exercise.date }} | {{ exercise.sets }} sets
-                        {% if exercise.laterality == 'bilateral' %} | Bilateral{% endif %}
+            <div class="exercises-grid">
+                {% for body_part, exercise_list in exercises.items() %}
+                <div class="body-part-section">
+                    <div class="body-part-title">{{ body_part }}</div>
+                    {% for exercise in exercise_list %}
+                    <div class="exercise-item" 
+                         draggable="true" 
+                         data-exercise-id="{{ exercise.id }}"
+                         data-exercise-name="{{ exercise.name }}"
+                         data-body-part="{{ exercise.body_part }}"
+                         data-date="{{ exercise.date }}"
+                         data-sets="{{ exercise.sets }}">
+                        <div class="exercise-name">{{ exercise.name }}</div>
+                        <div class="exercise-details">
+                            Last: {{ exercise.date }} | {{ exercise.sets }} sets
+                            {% if exercise.laterality == 'bilateral' %} | Bilateral{% endif %}
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
                 {% endfor %}
             </div>
-            {% endfor %}
         </div>
         
         <div class="selection-panel">
