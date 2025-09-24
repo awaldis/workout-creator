@@ -249,6 +249,10 @@
                 Copy Exercise IDs to Clipboard
             </button>
             
+            <button class="copy-btn" id="createPdfBtn" disabled style="margin-top: 10px; background: #007acc;">
+                Create Workout PDF
+            </button>
+            
             <div id="statusMessage"></div>
         </div>
     </div>
@@ -333,12 +337,19 @@
         function updateCopyButton() {
             const hasExercises = selectedExercises.some(ex => ex !== null);
             const copyBtn = document.getElementById('copyIdsBtn');
+            const pdfBtn = document.getElementById('createPdfBtn');
+            
             copyBtn.disabled = !hasExercises;
+            pdfBtn.disabled = !hasExercises;
             
             const count = selectedExercises.filter(ex => ex !== null).length;
             copyBtn.textContent = count > 0 ? 
                 `Copy ${count} Exercise IDs to Clipboard` : 
                 'Copy Exercise IDs to Clipboard';
+                
+            pdfBtn.textContent = count > 0 ? 
+                `Create Workout PDF (${count} exercises)` : 
+                'Create Workout PDF';
         }
         
         function showStatus(message, isError = false) {
@@ -357,7 +368,7 @@
         document.getElementById('copyIdsBtn').addEventListener('click', async () => {
             const exerciseIds = selectedExercises
                 .filter(ex => ex !== null)
-                .map(ex => ex.id);
+                .map(ex => parseInt(ex.id, 10));
             
             if (exerciseIds.length === 0) {
                 showStatus('No exercises selected', true);
@@ -383,6 +394,77 @@
             } catch (error) {
                 console.error('Copy failed:', error);
                 showStatus('Failed to copy to clipboard', true);
+            }
+        });
+        
+        // Create PDF
+        document.getElementById('createPdfBtn').addEventListener('click', async () => {
+            const exerciseIds = selectedExercises
+                .filter(ex => ex !== null)
+                .map(ex => parseInt(ex.id, 10));
+            
+            if (exerciseIds.length === 0) {
+                showStatus('No exercises selected', true);
+                return;
+            }
+            
+            const pdfBtn = document.getElementById('createPdfBtn');
+            const originalText = pdfBtn.textContent;
+            
+            try {
+                // Disable button and show loading state
+                pdfBtn.disabled = true;
+                pdfBtn.textContent = 'Creating PDF...';
+                
+                // Send to backend API
+                const response = await fetch('/api/create_pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ids: exerciseIds })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to create PDF');
+                }
+                
+                // Get the PDF blob and create download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                
+                // Extract filename from Content-Disposition header or use default
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'workout.pdf';
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                
+                // Create download link and trigger download
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                showStatus(`Successfully created and downloaded ${filename}`);
+                
+            } catch (error) {
+                console.error('PDF creation failed:', error);
+                showStatus(`Failed to create PDF: ${error.message}`, true);
+            } finally {
+                // Re-enable button
+                pdfBtn.disabled = false;
+                pdfBtn.textContent = originalText;
+                updateCopyButton(); // This will update button state based on selections
             }
         });
         
