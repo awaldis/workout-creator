@@ -59,11 +59,8 @@
             border-radius: 4px;
             padding: 10px;
             margin-bottom: 8px;
-            cursor: grab;
+            cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         
         .exercise-item:hover {
@@ -85,30 +82,6 @@
             font-size: 12px;
             color: #666;
             margin-top: 4px;
-        }
-
-        .exercise-content {
-            flex: 1;
-        }
-
-        .add-to-slot-btn {
-            background: #007acc;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            padding: 4px 8px;
-            font-size: 10px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .add-to-slot-btn:hover {
-            background: #005c99;
-        }
-
-        .add-to-slot-btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
         }
         
         .workout-slots {
@@ -247,14 +220,11 @@
                          data-body-part="{{ exercise.body_part }}"
                          data-date="{{ exercise.date }}"
                          data-sets="{{ exercise.sets }}">
-                        <div class="exercise-content">
-                            <div class="exercise-name">{{ exercise.name }}</div>
-                            <div class="exercise-details">
-                                Last: {{ exercise.date }} | {{ exercise.sets }} sets
-                                {% if exercise.laterality == 'bilateral' %} | Bilateral{% endif %}
-                            </div>
+                        <div class="exercise-name">{{ exercise.name }}</div>
+                        <div class="exercise-details">
+                            Last: {{ exercise.date }} | {{ exercise.sets }} sets
+                            {% if exercise.laterality == 'bilateral' %} | Bilateral{% endif %}
                         </div>
-                        <button class="add-to-slot-btn" onclick="addToNextSlot(this)">+ Add</button>
                     </div>
                     {% endfor %}
                 </div>
@@ -302,9 +272,19 @@
                 }));
                 item.classList.add('dragging');
             });
-            
+
             item.addEventListener('dragend', (e) => {
                 item.classList.remove('dragging');
+            });
+
+            // Click to add to next available slot
+            item.addEventListener('click', (e) => {
+                // Prevent click during drag operations
+                if (item.classList.contains('dragging')) {
+                    return;
+                }
+
+                addToNextSlot(item);
             });
         });
         
@@ -499,7 +479,7 @@
         });
 
         // Function to add exercise to next available slot
-        function addToNextSlot(button) {
+        function addToNextSlot(exerciseItem) {
             // Find next available empty slot
             const nextEmptyIndex = selectedExercises.findIndex(slot => slot === null);
 
@@ -508,8 +488,7 @@
                 return;
             }
 
-            // Get exercise data from the button's parent exercise item
-            const exerciseItem = button.closest('.exercise-item');
+            // Get exercise data from the exercise item
             const exerciseData = {
                 id: exerciseItem.dataset.exerciseId,
                 name: exerciseItem.dataset.exerciseName,
@@ -526,30 +505,8 @@
             showStatus(`Added "${exerciseData.name}" to slot ${slotNumber}`);
         }
 
-        // Update button states based on available slots
-        function updateAddButtons() {
-            const hasAvailableSlots = selectedExercises.some(slot => slot === null);
-            const addButtons = document.querySelectorAll('.add-to-slot-btn');
-
-            addButtons.forEach(button => {
-                button.disabled = !hasAvailableSlots;
-                button.textContent = hasAvailableSlots ? '+ Add' : 'Full';
-            });
-        }
-
-        // Override the updateCopyButton function to also update add buttons
-        const originalUpdateCopyButton = updateCopyButton;
-        updateCopyButton = function() {
-            originalUpdateCopyButton();
-            updateAddButtons();
-        };
-
-        // Initialize button states
-        updateAddButtons();
-
         // Make slots globally accessible for remove function
         window.removeFromSlot = removeFromSlot;
-        window.addToNextSlot = addToNextSlot;
     </script>
 </body>
 </html>
