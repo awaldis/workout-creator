@@ -44,15 +44,52 @@ def clipboard_to_csv(output_file=None, show_preview=False):
 
     # Show preview if requested
     if show_preview:
+        import csv
+        from io import StringIO
+
         lines = clipboard_text.strip().split('\n')
-        preview_lines = lines[:5]
+        preview_count = min(16, len(lines))  # Header + 15 data rows
+        preview_lines = lines[:preview_count]
+
         print("Preview of clipboard content:")
-        print("-" * 60)
-        for line in preview_lines:
-            print(line)
-        if len(lines) > 5:
-            print(f"... and {len(lines) - 5} more lines")
-        print("-" * 60)
+        print()
+
+        # Parse CSV to align columns
+        try:
+            csv_reader = csv.reader(StringIO('\n'.join(preview_lines)))
+            rows = list(csv_reader)
+
+            if rows:
+                # Calculate column widths
+                col_widths = [0] * len(rows[0])
+                for row in rows:
+                    for i, cell in enumerate(row):
+                        if i < len(col_widths):
+                            col_widths[i] = max(col_widths[i], len(cell))
+
+                # Print aligned rows
+                for i, row in enumerate(rows):
+                    formatted_cells = []
+                    for j, cell in enumerate(row):
+                        if j < len(col_widths):
+                            formatted_cells.append(cell.ljust(col_widths[j]))
+                    print('  '.join(formatted_cells))
+
+                    # Print separator after header
+                    if i == 0:
+                        print('-' * (sum(col_widths) + 2 * (len(col_widths) - 1)))
+
+                if len(lines) > preview_count:
+                    print(f"\n... and {len(lines) - preview_count} more rows")
+        except Exception as e:
+            # Fallback to simple line-by-line display
+            for line in preview_lines:
+                print(line)
+            if len(lines) > preview_count:
+                print(f"... and {len(lines) - preview_count} more lines")
+
+        print()
+        print(f"Total rows: {len(lines) - 1} (excluding header)")
         print()
 
     # Generate output filename if not provided
